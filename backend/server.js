@@ -3,8 +3,11 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-import bookingRoutes from "./routes/booking.routes.js";
+import destinationRoutes from "./routes/destinationRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import protectedRoutes from "./routes/protectedRoutes.js";
+import guideRoutes from "./routes/guideRoutes.js";
+import bookingRoutes from "./routes/booking.routes.js";
 dotenv.config();
 connectDB();
 
@@ -16,7 +19,12 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes); 
+app.use("/api/destinations", destinationRoutes);
+app.use("/api", protectedRoutes);
+app.use("/api/guides", guideRoutes);
 app.use("/api/bookings", bookingRoutes);
+
+
 
 // Test Route
 app.get("/", (req, res) => {

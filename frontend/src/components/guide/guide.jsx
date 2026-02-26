@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Search, 
   MapPin, 
@@ -13,11 +13,11 @@ import {
   Loader2,
   Frown
 } from 'lucide-react';
-import guidesData from './guidesdata';
-import Image from 'next/image';
+
 
 
 export default function GuidesPage() {
+  const [guidesData, setGuidesData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedGuide, setSelectedGuide] = useState(null);
@@ -54,11 +54,24 @@ export default function GuidesPage() {
     setShowBookingModal(true);
     setShowSuccessMessage(false);
   };
+useEffect(() => {
+  const fetchGuides = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/guides");
+      const data = await res.json();
+      setGuidesData(data);
+    } catch (error) {
+      console.error("Error fetching guides:", error);
+    }
+  };
 
+  fetchGuides();
+}, []);
   // Handle form submission (Frontend only - no backend)
   const handleSubmitBooking = async (e) => {
   e.preventDefault();
   setLoading(true);
+
 
   try {
     const res = await fetch("http://localhost:5000/api/bookings", {
@@ -68,7 +81,7 @@ export default function GuidesPage() {
       },
       body: JSON.stringify({
         // Guide info
-        guideId: selectedGuide.id,
+        guideId: selectedGuide._id,
         guideName: selectedGuide.name,
         guidePlace: selectedGuide.place,
         pricePerDay: selectedGuide.price,
@@ -199,7 +212,7 @@ export default function GuidesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredGuides.map((guide) => (
             <div
-              key={guide.id}
+              key={guide._id}
               className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
             >
               {/* Guide Header with Image */}
@@ -301,7 +314,7 @@ export default function GuidesPage() {
 
       {/* Booking Modal */}
       {showBookingModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             {/* Success Message Overlay */}
             {showSuccessMessage && (
@@ -389,7 +402,7 @@ export default function GuidesPage() {
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-700 focus:border-transparent"
-                    placeholder="John Doe"
+                    placeholder="tapasvi"
                   />
                 </div>
 
@@ -404,7 +417,7 @@ export default function GuidesPage() {
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-700 focus:border-transparent"
-                    placeholder="john@example.com"
+                    placeholder="tap@gmail.com"
                   />
                 </div>
               </div>

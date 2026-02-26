@@ -612,9 +612,9 @@ export const DESTINATIONS_DATA = [
 export const CATEGORIES = [
   "All",
   "Heritage",
-  "Nature",
-  "Beach",
-  "Religious",
-  "Monument",
-  "Wildlife"
+  "Forts",
+  "Beaches",
+  "Mountains",
+  "Temples",
+  "Waterfalls"
 ];

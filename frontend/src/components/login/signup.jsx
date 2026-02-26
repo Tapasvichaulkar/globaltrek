@@ -60,10 +60,10 @@ export default function Signup() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden p-4">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden p-3 sm:p-4">
       {/* Background Video */}
       <video
-        className="absolute inset-0 w-full h-full object-cover z-0 [clip-path:polygon(0_30%,100%_50%,100%_100%,0_100%)]"
+        className="absolute inset-0 w-full h-full object-cover z-0 [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)]"
         src="/bg.mp4"
         autoPlay
         muted
@@ -72,7 +72,7 @@ export default function Signup() {
       />
 
       {/* White gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-white [clip-path:polygon(0_0,100%_0,100%_50%,0_30%)] z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-white opacity-90 z-10"></div>
 
       {/* Form Content */}
       <motion.div
@@ -81,28 +81,28 @@ export default function Signup() {
         transition={{ duration: 0.6 }}
         className="w-full max-w-lg relative z-10"
       >
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 border border-blue-100">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 border border-blue-100">
           {/* Header */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-4 sm:mb-6">
             <motion.div
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-1">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-1">
                 GlobalTrek
               </h1>
-              <p className="text-gray-600 text-sm font-medium">
+              <p className="text-gray-600 text-xs sm:text-sm font-medium">
                 Create your account to get started
               </p>
             </motion.div>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:gap-2.5">
             {/* Full Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Full Name
               </label>
               <input
@@ -110,13 +110,13 @@ export default function Signup() {
                 placeholder="Enter your full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
+                className="w-full border border-gray-300 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Email Address
               </label>
               <input
@@ -124,13 +124,13 @@ export default function Signup() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
+                className="w-full border border-gray-300 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
@@ -138,13 +138,13 @@ export default function Signup() {
                 placeholder="Create a strong password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
+                className="w-full border border-gray-300 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Phone Number
               </label>
               <input
@@ -152,13 +152,13 @@ export default function Signup() {
                 placeholder="+1 (555) 000-0000"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
+                className="w-full border border-gray-300 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
               />
             </div>
 
             {/* Address */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Address
               </label>
               <textarea
@@ -166,7 +166,7 @@ export default function Signup() {
                 rows={2}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
+                className="w-full border border-gray-300 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 hover:bg-white"
               />
             </div>
 
@@ -176,11 +176,11 @@ export default function Signup() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-2.5 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-300 mt-2"
+              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-2.5 sm:py-3 rounded-xl text-sm sm:text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-300 mt-1 sm:mt-2"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24">
                     <circle
                       className="opacity-25"
                       cx="12"
@@ -208,7 +208,7 @@ export default function Signup() {
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-red-600 text-sm text-center bg-red-50 p-2 rounded-lg border border-red-200"
+                className="text-red-600 text-xs sm:text-sm text-center bg-red-50 p-2 rounded-lg border border-red-200"
               >
                 {error}
               </motion.div>
@@ -216,11 +216,11 @@ export default function Signup() {
           </form>
 
           {/* Divider */}
-          <div className="relative my-4">
+          <div className="relative my-3 sm:my-4">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
+            <div className="relative flex justify-center text-xs sm:text-sm">
               <span className="px-3 bg-white text-gray-500">
                 or sign up with
               </span>
@@ -228,7 +228,7 @@ export default function Signup() {
           </div>
 
           {/* Login Link */}
-          <p className="text-center text-sm mt-4 text-gray-600">
+          <p className="text-center text-xs sm:text-sm mt-3 sm:mt-4 text-gray-600">
             Already have an account?{" "}
             <a
               href="/login"
@@ -240,7 +240,7 @@ export default function Signup() {
         </div>
 
         {/* Terms */}
-        <p className="text-center text-xs text-gray-500 mt-3">
+        <p className="text-center text-xs text-gray-500 mt-2 sm:mt-3 px-2">
           By signing up, you agree to our{" "}
           <a href="/terms" className="text-blue-600 hover:underline">
             Terms of Service

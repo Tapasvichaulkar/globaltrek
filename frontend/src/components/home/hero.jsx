@@ -76,45 +76,31 @@ export default function Hero() {
       {/* Hero Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-[calc(100vh-4rem)] px-4">
         {/* Logo and Tagline */}
-        <div className="text-center  mt-14">
-          <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-wider" style={{ fontFamily: 'cursive' }}>
+        <div className="text-center mt-10 sm:mt-14">
+          <h1
+            className="text-5xl sm:text-6xl md:text-8xl font-bold text-white mb-3 sm:mb-6 tracking-wider"
+            style={{ fontFamily: 'cursive' }}
+          >
             GlobalTrek
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 font-light">
+          <p className="text-base sm:text-xl md:text-2xl text-white/90 font-light px-4 sm:px-0">
             A virtual journey around the world
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className="w-full max-w-2xl mb-16">
-          <div className="flex items-center p-2 bg-white rounded-xl overflow-hidden shadow-2xl">
-            <input
-              type="text"
-              placeholder="Search destinations..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="flex-1 px-6 py-4  text-gray-800 text-lg focus:outline-none"
-            />
-            <button
-              onClick={handleSearch}
-              className="bg-gray-400 hover:bg-gray-100 text-white px-4 py-3  transition-colors rounded-2xl"
-            >
-              <Search className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
+       
 
         {/* Slide Indicators */}
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3 mt-6 sm:mt-0">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all ${
+              className={`h-2.5 sm:h-3 rounded-full transition-all ${
                 currentSlide === index
-                  ? 'bg-white w-8'
-                  : 'bg-white/50 hover:bg-white/75'
+                  ? 'bg-white w-6 sm:w-8'
+                  : 'w-2.5 sm:w-3 bg-white/50 hover:bg-white/75'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -124,23 +110,20 @@ export default function Hero() {
 
       {/* Navigation Arrows */}
       <button
-  onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition-all"
-  aria-label="Previous slide"
->
-  <ChevronLeft className="w-6 h-6" />
-</button>
+        onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 sm:p-3 rounded-full transition-all"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+      </button>
 
-<button
-  onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition-all"
-  aria-label="Next slide"
->
-  <ChevronRight className="w-6 h-6" />
-</button>
-
-
-     
+      <button
+        onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 sm:p-3 rounded-full transition-all"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+      </button>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 import Destinations from '@/components/destination/destination'
 import React from 'react'
 

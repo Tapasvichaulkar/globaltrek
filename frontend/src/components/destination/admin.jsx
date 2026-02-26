@@ -1,10 +1,118 @@
 "use client";
-import { useState } from "react";
-import { DESTINATIONS_DATA, CATEGORIES } from "./d";
+
+import { useState, useEffect } from "react";
+import { CATEGORIES } from "./d";
 
 export default function AdminPage() {
-  const [destinations, setDestinations] = useState(DESTINATIONS_DATA);
-  const [form, setForm] = useState({
+const [destinations, setDestinations] = useState([]);
+const [form, setForm] = useState({
+  title: "",
+  location: "",
+  category: "Heritage",
+  thumbnail: "",
+  main360: "",
+  views: "",
+});
+const [editId, setEditId] = useState(null);
+
+// 🔥 FETCH DATA FROM BACKEND WHEN PAGE LOADS
+useEffect(() => {
+  fetchDestinations();
+}, []);
+
+const fetchDestinations = async () => {
+  try {
+    const res = await fetch("http://localhost:5000/api/destinations");
+    const data = await res.json();
+    setDestinations(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Handle input (SAME)
+const handleChange = (e) => {
+  setForm({ ...form, [e.target.name]: e.target.value });
+};
+
+// ✅ Add or Update (NOW CONNECTED TO BACKEND)
+const handleSubmit = async () => {
+  const payload = {
+    ...form,
+    views: form.views
+      ? form.views.split(",").map((v) => v.trim())
+      : [],
+  };
+
+  try {
+    if (editId) {
+      // UPDATE
+      await fetch(
+        `http://localhost:5000/api/destinations/${editId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+    } else {
+      // CREATE
+      await fetch(
+        "http://localhost:5000/api/destinations",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+    }
+
+    fetchDestinations(); // refresh table
+
+    setForm({
+      title: "",
+      location: "",
+      category: "Heritage",
+      thumbnail: "",
+      main360: "",
+      views: "",
+    });
+
+    setEditId(null);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// ✅ Edit (MongoDB uses _id)
+const handleEdit = (item) => {
+  setEditId(item._id);
+  setForm({
+    title: item.title,
+    location: item.location,
+    category: item.category,
+    thumbnail: item.thumbnail,
+    main360: item.main360,
+    views: item.views ? item.views.join(",") : "",
+  });
+};
+
+// ✅ Delete (Connected to backend)
+const handleDelete = async (id) => {
+  try {
+    await fetch(
+      `http://localhost:5000/api/destinations/${id}`,
+      { method: "DELETE" }
+    );
+    fetchDestinations();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Cancel edit (SAME)
+const handleCancel = () => {
+  setForm({
     title: "",
     location: "",
     category: "Heritage",
@@ -12,79 +120,8 @@ export default function AdminPage() {
     main360: "",
     views: "",
   });
-  const [editId, setEditId] = useState(null);
-
-  // Handle input
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  // Add or Update
-  const handleSubmit = () => {
-    if (editId) {
-      setDestinations(
-        destinations.map((d) =>
-          d.id === editId
-            ? {
-                ...d,
-                ...form,
-                views: form.views.split(","),
-              }
-            : d
-        )
-      );
-    } else {
-      setDestinations([
-        ...destinations,
-        {
-          id: Date.now(),
-          ...form,
-          views: form.views.split(","),
-        },
-      ]);
-    }
-
-    setForm({
-      title: "",
-      location: "",
-      category: "Heritage",
-      thumbnail: "",
-      main360: "",
-      views: "",
-    });
-    setEditId(null);
-  };
-
-  // Edit
-  const handleEdit = (item) => {
-    setEditId(item.id);
-    setForm({
-      title: item.title,
-      location: item.location,
-      category: item.category,
-      thumbnail: item.thumbnail,
-      main360: item.main360,
-      views: item.views.join(","),
-    });
-  };
-
-  // Delete
-  const handleDelete = (id) => {
-    setDestinations(destinations.filter((d) => d.id !== id));
-  };
-
-  // Cancel edit
-  const handleCancel = () => {
-    setForm({
-      title: "",
-      location: "",
-      category: "Heritage",
-      thumbnail: "",
-      main360: "",
-      views: "",
-    });
-    setEditId(null);
-  };
+  setEditId(null);
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-50 p-8">
@@ -333,9 +370,9 @@ export default function AdminPage() {
                 ) : (
                   destinations.map((item, index) => (
                     <tr
-                      key={item.id}
+                      key={item._id}
                       className={`border-b border-blue-50 hover:bg-blue-50/50 transition ${
-                        editId === item.id ? "bg-blue-50" : ""
+                        editId === item._id ? "bg-blue-50" : ""
                       }`}
                     >
                       <td className="p-4">
@@ -373,7 +410,7 @@ export default function AdminPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(item.id)}
+                            onClick={() => handleDelete(item._id)}
                             className="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 font-medium rounded-lg transition flex items-center gap-1"
                           >
                             <svg

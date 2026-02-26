@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 const destinations = [
   {
@@ -61,28 +62,22 @@ const destinations = [
   }
 ];
 
-const DestinationCard = ({ destination, index, activeIndex, onClick }) => {
+const DestinationCard = ({ destination, index, activeIndex, onClick, onExplore }) => {
   const isActive = index === activeIndex;
   const distance = Math.abs(index - activeIndex);
-  
+
   const getCardStyle = () => {
     if (isActive) {
-      return {
-        transform: 'scale(1.1) translateY(-20px) rotateY(0deg)',
-        opacity: 1,
-        zIndex: 30
-      };
+      return { transform: 'scale(1.1) translateY(-20px) rotateY(0deg)', opacity: 1, zIndex: 30 };
     } else if (distance === 1) {
       return {
         transform: `scale(0.95) translateY(0px) rotateY(${index < activeIndex ? '15deg' : '-15deg'})`,
-        opacity: 0.8,
-        zIndex: 20
+        opacity: 0.8, zIndex: 20
       };
     } else {
       return {
         transform: `scale(0.85) translateY(10px) rotateY(${index < activeIndex ? '25deg' : '-25deg'})`,
-        opacity: 0.5,
-        zIndex: 10
+        opacity: 0.5, zIndex: 10
       };
     }
   };
@@ -100,9 +95,8 @@ const DestinationCard = ({ destination, index, activeIndex, onClick }) => {
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
         />
-        
         <div className={`absolute inset-0 bg-gradient-to-t ${destination.color} opacity-40 group-hover:opacity-60 transition-opacity duration-500`} />
-        
+
         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center space-x-2 shadow-lg animate-pulse">
           <div className="w-2 h-2 bg-red-500 rounded-full" />
           <span className="text-xs font-bold text-gray-800">360° View</span>
@@ -117,11 +111,11 @@ const DestinationCard = ({ destination, index, activeIndex, onClick }) => {
               </svg>
               {destination.location}
             </p>
-            <button 
+            <button
               className="bg-white text-gray-900 px-6 py-2.5 rounded-full font-semibold hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 shadow-lg"
               onClick={(e) => {
                 e.stopPropagation();
-                alert(`Exploring ${destination.name}!`);
+                onExplore();
               }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,54 +147,34 @@ const DestinationCard = ({ destination, index, activeIndex, onClick }) => {
 };
 
 export default function DestinationsCarousel() {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => { setIsMounted(true); }, []);
 
   useEffect(() => {
     if (!isAutoPlaying || !isMounted) return;
-    
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % destinations.length);
     }, 4000);
-
     return () => clearInterval(interval);
   }, [isAutoPlaying, isMounted]);
 
   useEffect(() => {
     if (!isMounted) return;
-    
     const scrollContainer = containerRef.current;
     if (!scrollContainer) return;
-
-    const centerActiveCard = () => {
-      const cardWidth = 320 + 32;
-      const containerWidth = scrollContainer.clientWidth;
-      const scrollPosition = (activeIndex * cardWidth) - (containerWidth / 2) + (cardWidth / 2);
-      
-      scrollContainer.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth'
-      });
-    };
-
-    centerActiveCard();
+    const cardWidth = 320 + 32;
+    const containerWidth = scrollContainer.clientWidth;
+    const scrollPosition = (activeIndex * cardWidth) - (containerWidth / 2) + (cardWidth / 2);
+    scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
   }, [activeIndex, isMounted]);
 
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % destinations.length);
-    setIsAutoPlaying(false);
-  };
-
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev - 1 + destinations.length) % destinations.length);
-    setIsAutoPlaying(false);
-  };
+  const handleNext = () => { setActiveIndex((prev) => (prev + 1) % destinations.length); setIsAutoPlaying(false); };
+  const handlePrev = () => { setActiveIndex((prev) => (prev - 1 + destinations.length) % destinations.length); setIsAutoPlaying(false); };
 
   if (!isMounted) {
     return (
@@ -212,21 +186,16 @@ export default function DestinationsCarousel() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 py-20 px-4 overflow-hidden">
-      <div className="text-center mb-12 animate-fade-in">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Popular 360° Destinations
-        </h2>
+      <div className="text-center mb-12">
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Popular 360° Destinations</h2>
         <p className="text-xl text-blue-200">Explore breathtaking views from anywhere</p>
       </div>
 
       <div className="relative max-w-7xl mx-auto">
-        <div 
+        <div
           ref={containerRef}
           className="flex items-center gap-8 px-4 overflow-x-hidden py-12"
-          style={{ 
-            perspective: '1000px',
-            scrollBehavior: 'smooth'
-          }}
+          style={{ perspective: '1000px', scrollBehavior: 'smooth' }}
         >
           {destinations.map((destination, index) => (
             <DestinationCard
@@ -234,10 +203,8 @@ export default function DestinationsCarousel() {
               destination={destination}
               index={index}
               activeIndex={activeIndex}
-              onClick={() => {
-                setActiveIndex(index);
-                setIsAutoPlaying(false);
-              }}
+              onClick={() => { setActiveIndex(index); setIsAutoPlaying(false); }}
+              onExplore={() => router.push('/destination')}
             />
           ))}
         </div>
@@ -251,7 +218,6 @@ export default function DestinationsCarousel() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        
         <button
           onClick={handleNext}
           className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-xl z-40"
@@ -267,13 +233,10 @@ export default function DestinationsCarousel() {
         {destinations.map((_, index) => (
           <button
             key={index}
-            onClick={() => {
-              setActiveIndex(index);
-              setIsAutoPlaying(false);
-            }}
+            onClick={() => { setActiveIndex(index); setIsAutoPlaying(false); }}
             className={`transition-all duration-300 rounded-full ${
-              index === activeIndex 
-                ? 'w-12 h-3 bg-white' 
+              index === activeIndex
+                ? 'w-12 h-3 bg-white'
                 : 'w-3 h-3 bg-white/40 hover:bg-white/60'
             }`}
             aria-label={`Go to destination ${index + 1}`}

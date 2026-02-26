@@ -1,33 +1,50 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { DESTINATIONS_DATA, CATEGORIES } from "./d.jsx";
+import { CATEGORIES } from "./d.jsx";
 
 export default function Destinations() {
   const router = useRouter();
   const [active, setActive] = useState(null);
+  const [destinations, setDestinations] = useState([]);
   const [selectedView, setSelectedView] = useState(null);
   const [imageErrors, setImageErrors] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  // 🔥 Fetch data from backend
+useEffect(() => {
+  const fetchDestinations = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/destinations");
+      const data = await res.json();
+      setDestinations(data);
+    } catch (error) {
+      console.error("Error fetching destinations:", error);
+    }
+  };
+
+  fetchDestinations();
+}, []);
 
   const handleImageError = (id) => {
     setImageErrors((prev) => ({ ...prev, [id]: true }));
   };
 
   // Filter destinations based on search and category
-  const filteredDestinations = useMemo(() => {
-    return DESTINATIONS_DATA.filter((destination) => {
-      const matchesSearch =
-        destination.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        destination.location.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesCategory =
-        selectedCategory === "All" || destination.category === selectedCategory;
+const filteredDestinations = useMemo(() => {
+  return destinations.filter((destination) => {
+    const matchesSearch =
+      destination.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      destination.location.toLowerCase().includes(searchQuery.toLowerCase());
 
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchQuery, selectedCategory]);
+    const matchesCategory =
+      selectedCategory === "All" ||
+      destination.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+}, [destinations, searchQuery, selectedCategory]);
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 mt-12">
@@ -90,7 +107,7 @@ export default function Destinations() {
                 Discover All Destinations
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Explore {DESTINATIONS_DATA.length} incredible locations across India in immersive 360°
+                Explore {destinations.length}incredible locations across India in immersive 360°
               </p>
             </div>
 
@@ -143,7 +160,7 @@ export default function Destinations() {
               <div className="text-center">
                 <p className="text-gray-600">
                   Showing <span className="font-bold text-purple-600">{filteredDestinations.length}</span> of{" "}
-                  <span className="font-bold">{DESTINATIONS_DATA.length}</span> destinations
+                  <span className="font-bold">{destinations.length}</span> destinations
                 </p>
               </div>
             </div>
@@ -153,12 +170,12 @@ export default function Destinations() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredDestinations.map((item) => (
                   <div
-                    key={item.id}
+                    key={item._id}
                     onClick={() => setActive(item)}
                     className="group cursor-pointer rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-2xl border border-gray-200 hover:border-purple-400 transition-all duration-300 hover:scale-105"
                   >
                     <div className="relative h-56 overflow-hidden">
-                      {imageErrors[item.id] ? (
+                      {imageErrors[item._id] ? (
                         <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
                           <div className="text-center">
                             <svg
@@ -183,7 +200,7 @@ export default function Destinations() {
                         <img
                           src={item.thumbnail}
                           alt={item.title}
-                          onError={() => handleImageError(item.id)}
+                          onError={() => handleImageError(item._id)}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                       )}

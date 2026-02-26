@@ -1,15 +1,13 @@
 import express from "express";
-import {
-  createBooking,
-  getAllBookings
-} from "../controllers/booking.controller.js";
+import { acceptBooking, createBooking, getAllBookings, rejectBooking ,getBookingsByGuide  } from "../controllers/bookingController.js";
+
 
 const router = express.Router();
 
-// POST → Save booking
 router.post("/", createBooking);
-
-// GET → Fetch all bookings (Admin)
 router.get("/", getAllBookings);
+router.get("/guide/:guideId", getBookingsByGuide);
+router.put("/accept/:id", acceptBooking);
+router.put("/reject/:id", rejectBooking);
 
 export default router;

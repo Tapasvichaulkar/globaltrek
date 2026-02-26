@@ -7,6 +7,12 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
+
+    role: {
+      type: String,
+      enum: ["user", "guide", "admin"],
+      default: "user"
+    }
   },
   { timestamps: true }
 );

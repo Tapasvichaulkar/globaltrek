@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, Edit, Plus, Save, X, Users, MapPin, Star, DollarSign, Globe } from 'lucide-react';
-import guidesData from './guidesdata';
+
 
 export default function GuideAdminPage() {
-  const [guides, setGuides] = useState(guidesData);
+  const [guides, setGuides] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
   const emptyForm = {
@@ -21,55 +21,81 @@ export default function GuideAdminPage() {
   };
 
   const [form, setForm] = useState(emptyForm);
+useEffect(() => {
+  fetchGuides();
+}, []);
 
+const fetchGuides = async () => {
+  try {
+    const res = await fetch("http://localhost:5000/api/guides");
+    const data = await res.json();
+    setGuides(data);
+  } catch (error) {
+    console.error("Error fetching guides:", error);
+  }
+};
   // Add or Update Guide
-  const handleSave = () => {
-    if (!form.name || !form.place || !form.price) {
-      alert('Please fill required fields: Name, Place, and Price');
-      return;
-    }
+const handleSave = async () => {
+  if (!form.name || !form.place || !form.price) {
+    alert('Please fill required fields: Name, Place, and Price');
+    return;
+  }
 
-    if (editingId) {
-      setGuides(guides.map(g =>
-        g.id === editingId
-          ? {
-              ...g,
-              ...form,
-              languages: form.languages.split(',').map(l => l.trim())
-            }
-          : g
-      ));
-      setEditingId(null);
-    } else {
-      setGuides([
-        ...guides,
-        {
-          id: Date.now(),
-          ...form,
-          rating: Number(form.rating || 4.5),
-          price: Number(form.price),
-          languages: form.languages.split(',').map(l => l.trim())
-        }
-      ]);
-    }
-
-    setForm(emptyForm);
+  const guideData = {
+    ...form,
+    rating: Number(form.rating || 4.5),
+    price: Number(form.price),
+    languages: form.languages
+      ? form.languages.split(',').map(l => l.trim())
+      : []
   };
+
+  try {
+    if (editingId) {
+      await fetch(`http://localhost:5000/api/guides/${editingId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(guideData),
+      });
+    } else {
+      await fetch("http://localhost:5000/api/guides", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(guideData),
+      });
+    }
+
+    fetchGuides();
+    setEditingId(null);
+    setForm(emptyForm);
+
+  } catch (error) {
+    console.error("Error saving guide:", error);
+  }
+};
 
   const handleEdit = (guide) => {
-    setEditingId(guide.id);
-    setForm({
-      ...guide,
-      languages: guide.languages.join(', ')
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  setEditingId(guide._id);
+  setForm({
+    ...guide,
+    languages: guide.languages ? guide.languages.join(', ') : ''
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
-  const handleDelete = (id) => {
-    if (confirm('Are you sure you want to delete this guide?')) {
-      setGuides(guides.filter(g => g.id !== id));
-    }
-  };
+  const handleDelete = async (id) => {
+  if (!confirm('Are you sure you want to delete this guide?')) return;
+
+  try {
+    await fetch(`http://localhost:5000/api/guides/${id}`, {
+      method: "DELETE",
+    });
+
+    fetchGuides();
+  } catch (error) {
+    console.error("Error deleting guide:", error);
+  }
+};
 
   const handleCancel = () => {
     setEditingId(null);
@@ -325,9 +351,9 @@ export default function GuideAdminPage() {
                 ) : (
                   guides.map((guide) => (
                     <tr
-                      key={guide.id}
+                      key={guide._id}
                       className={`border-b border-blue-50 hover:bg-blue-50/50 transition ${
-                        editingId === guide.id ? 'bg-blue-50' : ''
+                        editingId === guide._id ? 'bg-blue-50' : ''
                       }`}
                     >
                       <td className="p-4">
@@ -414,7 +440,7 @@ export default function GuideAdminPage() {
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => handleDelete(guide.id)}
+                            onClick={() => handleDelete(guide._id)}
                             className="p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition"
                             title="Delete guide"
                           >
