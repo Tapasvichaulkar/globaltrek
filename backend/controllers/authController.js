@@ -1,5 +1,10 @@
+import {
+  caesarEncrypt,
+  aesEncrypt,
+  aesDecrypt
+} from "../config/encryption.js";
+
 import User from "../models/User.js";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const generateToken = (id) => {
@@ -8,6 +13,7 @@ const generateToken = (id) => {
   });
 };
 
+/* ================= REGISTER ================= */
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
@@ -16,17 +22,21 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "All fields required" });
     }
 
-    const userExists = await User.findOne({ email });
+    // 🔐 Encrypt Email using Caesar
+    const encryptedEmail = caesarEncrypt(email);
+
+    const userExists = await User.findOne({ email: encryptedEmail });
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // 🔐 Encrypt Password using AES
+    const encryptedPassword = aesEncrypt(password);
 
     await User.create({
       name,
-      email,
-      password: hashedPassword,
+      email: encryptedEmail,
+      password: encryptedPassword,
       phone,
       address,
     });
@@ -38,22 +48,32 @@ export const registerUser = async (req, res) => {
   }
 };
 
+/* ================= LOGIN ================= */
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+    // Apply SAME Caesar to email
+    const encryptedEmail = caesarEncrypt(email);
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+    const user = await User.findOne({ email: encryptedEmail });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Decrypt stored password
+    const decryptedPassword = aesDecrypt(user.password);
+
+    if (password !== decryptedPassword) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
     res.json({
       token: generateToken(user._id),
       user: {
         id: user._id,
         name: user.name,
-        email: user.email,
+        email, // send original email back
         phone: user.phone,
         address: user.address,
         role: user.role
