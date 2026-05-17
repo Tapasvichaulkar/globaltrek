@@ -204,7 +204,7 @@ export default function Sample() {
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-50 group-hover:opacity-70 transition-opacity" />
-                    
+
                     {/* 360° Badge */}
                     <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-blue-600 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-semibold text-white flex items-center gap-1 shadow-lg">
                       <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -275,9 +275,7 @@ export default function Sample() {
                   {/* Main view thumbnail */}
                   <button
                     onClick={() => { setSelectedView(null); setShowSidebar(false); }}
-                    className={`flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedView === null ? 'border-blue-600 shadow-md' : 'border-gray-200'
-                    }`}
+                    className={`flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${selectedView === null ? 'border-blue-600 shadow-md' : 'border-gray-200'}`}
                   >
                     <div className="relative w-28 h-20">
                       <iframe src={active.main360} className="w-full h-full pointer-events-none" title="Main" />
@@ -291,9 +289,7 @@ export default function Sample() {
                     <button
                       key={index}
                       onClick={() => { setSelectedView(index); setShowSidebar(false); }}
-                      className={`flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                        selectedView === index ? 'border-blue-600 shadow-md' : 'border-gray-200'
-                      }`}
+                      className={`flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${selectedView === index ? 'border-blue-600 shadow-md' : 'border-gray-200'}`}
                     >
                       <div className="relative w-28 h-20">
                         <iframe src={view} className="w-full h-full pointer-events-none" title={`View ${index + 1}`} />
@@ -373,16 +369,12 @@ export default function Sample() {
                       Alternative Views ({active.views?.length || 0})
                     </p>
                   </div>
-                  
+
                   {/* Main View Option */}
                   <div className="p-3">
                     <button
                       onClick={() => setSelectedView(null)}
-                      className={`w-full rounded-xl overflow-hidden border-2 transition-all duration-300 ${
-                        selectedView === null
-                          ? 'border-blue-600 shadow-lg scale-105'
-                          : 'border-gray-200 hover:border-blue-400'
-                      }`}
+                      className={`w-full rounded-xl overflow-hidden border-2 transition-all duration-300 ${selectedView === null ? 'border-blue-600 shadow-lg scale-105' : 'border-gray-200 hover:border-blue-400'}`}
                     >
                       <div className="relative group">
                         <iframe
@@ -406,11 +398,7 @@ export default function Sample() {
                         <button
                           key={index}
                           onClick={() => setSelectedView(index)}
-                          className={`w-full rounded-xl overflow-hidden border-2 transition-all duration-300 ${
-                            selectedView === index
-                              ? 'border-blue-600 shadow-lg scale-105'
-                              : 'border-gray-200 hover:border-blue-400'
-                          }`}
+                          className={`w-full rounded-xl overflow-hidden border-2 transition-all duration-300 ${selectedView === index ? 'border-blue-600 shadow-lg scale-105' : 'border-gray-200 hover:border-blue-400'}`}
                         >
                           <div className="relative group">
                             <iframe
@@ -441,13 +429,11 @@ export default function Sample() {
           </div>
         )}
 
+        {/* ✅ FIXED: multiline string joined to a single line */}
         <div className="mt-10 sm:mt-20 flex justify-center">
           <button
             onClick={() => router.push("/destination")}
-            className="px-7 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full
-                       bg-gradient-to-r from-blue-700 to-purple-700
-                       text-white shadow-lg hover:shadow-2xl
-                       hover:scale-105 transition-all duration-300"
+            className="px-7 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full bg-gradient-to-r from-blue-700 to-purple-700 text-white shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
           >
             See More →
           </button>
